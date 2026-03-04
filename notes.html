@@ -1,30 +1,36 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>View Notes</title>
-<link rel="stylesheet" href="style.css">
+    <title>View Notes</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header>
-<h1>Available Notes</h1>
+    <header>
+        <h1>Available Notes</h1>
 
-<nav>
-<a href="index.html">Home</a>
-<a href="upload.html">Upload Notes</a>
-<a href="notes.html">View Notes</a>
-</nav>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="upload.html">Upload Notes</a>
+            <a href="notes.html">View Notes</a>
+        </nav>
 
-</header>
+    </header>
 
-<section>
+    <section>
 
-<ul id="notesList"></ul>
+        <ul id="notesList"></ul>
 
-</section>
+    </section>
 
-<script src="script.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script src="script.js"></script>
 
 </body>
+
 </html>

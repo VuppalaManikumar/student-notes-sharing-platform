@@ -1,41 +1,76 @@
-let form = document.getElementById("uploadForm")
+let form = document.getElementById("uploadForm");
 
-if(form){
+const CLOUD_NAME = "dzyzwjovo";
+const UPLOAD_PRESET = "notes_upload";
 
-form.addEventListener("submit",function(e){
+if (form) {
 
-e.preventDefault()
+    form.addEventListener("submit", async function(e) {
 
-let title = document.getElementById("title").value
+        e.preventDefault();
 
-let notes = JSON.parse(localStorage.getItem("notes")) || []
+        let title = document.getElementById("title").value;
+        let file = document.getElementById("file").files[0];
 
-notes.push(title)
+        if (!file) {
+            alert("Please select a file");
+            return;
+        }
 
-localStorage.setItem("notes",JSON.stringify(notes))
+        let formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", UPLOAD_PRESET);
 
-alert("Notes Uploaded Successfully")
+        try {
 
-form.reset()
+            let response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, {
+                method: "POST",
+                body: formData
+            });
 
-})
+            let data = await response.json();
+
+            let notes = JSON.parse(localStorage.getItem("notes")) || [];
+
+            notes.push({
+                title: title,
+                url: data.secure_url
+            });
+
+            localStorage.setItem("notes", JSON.stringify(notes));
+
+            alert("Notes Uploaded Successfully");
+
+            form.reset();
+
+        } catch (error) {
+
+            console.error(error);
+            alert("Upload failed");
+
+        }
+
+    });
 
 }
 
-let notesList = document.getElementById("notesList")
+let notesList = document.getElementById("notesList");
 
-if(notesList){
+if (notesList) {
 
-let notes = JSON.parse(localStorage.getItem("notes")) || []
+    let notes = JSON.parse(localStorage.getItem("notes")) || [];
 
-notes.forEach(function(note){
+    notes.forEach(note => {
 
-let li = document.createElement("li")
+        let li = document.createElement("li");
 
-li.textContent = note
+        li.innerHTML = `
+<h3>${note.title}</h3>
+<a href="${note.url}" target="_blank">Download</a>
+`;
 
-notesList.appendChild(li)
+        notesList.appendChild(li);
 
-})
+    });
 
 }

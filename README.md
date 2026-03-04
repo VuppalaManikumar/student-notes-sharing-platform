@@ -1,28 +1,17 @@
-\# Student Notes Sharing Platform
+# Student Notes Sharing Platform
 
+A web application that allows students to upload and share study notes.
 
+Features
+- Upload notes
+- Store files in Firebase
+- View notes list
+- Download notes
 
-A simple frontend web application where students can upload and view shared notes.
-
-
-
-Features:
-
-\- Upload notes
-
-\- View available notes
-
-\- Simple responsive design
-
-\- Uses LocalStorage for saving notes
-
-
-
-Technologies Used:
-
+Technologies
 HTML
-
 CSS
-
 JavaScript
-
+Firebase Storage
+Firebase Firestore
+GitHub Pages
