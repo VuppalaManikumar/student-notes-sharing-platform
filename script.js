@@ -1,7 +1,7 @@
 const CLOUD_NAME = "dzyzwjovo";
 const UPLOAD_PRESET = "notes_upload";
 
-const BIN_ID = "69a8709fae596e708f5f34df";
+const BIN_ID = "69a8748343b1c97be9b3704e";
 const API_KEY = "$2a$10$Wcs1VtVE8Fv19UlnOewSLegskxgcR0.Mv7.yFzxltzmTVUqbxwC9";
 
 let form = document.getElementById("uploadForm");
