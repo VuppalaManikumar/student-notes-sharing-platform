@@ -1,9 +1,6 @@
 const CLOUD_NAME = "dzyzwjovo";
 const UPLOAD_PRESET = "notes_upload";
 
-const BIN_ID = "69a8748343b1c97be9b3704e";
-const API_KEY = "$2a$10$Wcs1VtVE8Fv19UlnOewSLegskxgcR0.Mv7.yFzxltzmTVUqbxwC9";
-
 let form = document.getElementById("uploadForm");
 
 if (form) {
@@ -15,57 +12,49 @@ if (form) {
         let title = document.getElementById("title").value;
         let file = document.getElementById("file").files[0];
 
-        if (!file) {
-            alert("Please select a file");
+        if (!title || !file) {
+            alert("Enter title and choose file");
             return;
         }
 
-        let formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", UPLOAD_PRESET);
-
         try {
 
-            let upload = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, {
-                method: "POST",
-                body: formData
-            });
+            let formData = new FormData();
+            formData.append("file", file);
+            formData.append("upload_preset", UPLOAD_PRESET);
 
-            let uploadData = await upload.json();
-            let url = uploadData.secure_url;
-
-            let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                headers: {
-                    "X-Master-Key": API_KEY
+            let response = await fetch(
+                `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`, {
+                    method: "POST",
+                    body: formData
                 }
-            });
+            );
 
-            let data = await res.json();
-            let notes = data.record.notes || [];
+            let data = await response.json();
+
+            if (!data.secure_url) {
+                alert("Upload failed");
+                console.log(data);
+                return;
+            }
+
+            let notes = JSON.parse(localStorage.getItem("notes")) || [];
 
             notes.push({
                 title: title,
-                url: url
+                url: data.secure_url
             });
 
-            await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-Master-Key": API_KEY
-                },
-                body: JSON.stringify({ notes: notes })
-            });
+            localStorage.setItem("notes", JSON.stringify(notes));
 
             alert("Upload successful");
 
-            // reload notes
-            location.href = "notes.html";
+            window.location.href = "notes.html";
 
-        } catch (error) {
+        } catch (err) {
 
-            console.error(error);
-            alert("Upload failed");
+            console.error(err);
+            alert("Upload error");
 
         }
 
@@ -76,41 +65,20 @@ if (form) {
 let notesList = document.getElementById("notesList");
 
 if (notesList) {
-    loadNotes();
-}
 
-async function loadNotes() {
+    let notes = JSON.parse(localStorage.getItem("notes")) || [];
 
-    try {
+    notes.forEach(note => {
 
-        let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-            headers: {
-                "X-Master-Key": API_KEY
-            }
-        });
+        let li = document.createElement("li");
 
-        let data = await res.json();
-        let notes = data.record.notes || [];
-
-        notesList.innerHTML = "";
-
-        notes.forEach(note => {
-
-            let li = document.createElement("li");
-
-            li.innerHTML = `
+        li.innerHTML = `
 <h3>${note.title}</h3>
 <a href="${note.url}" target="_blank">Download</a>
 `;
 
-            notesList.appendChild(li);
+        notesList.appendChild(li);
 
-        });
-
-    } catch (error) {
-
-        console.error("Load notes error:", error);
-
-    }
+    });
 
 }
